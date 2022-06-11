@@ -1,0 +1,25 @@
+services:
+  webapifinal:
+    build:
+      context: C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src
+      dockerfile: WebApiFinal/Dockerfile
+    container_name: webapifinal
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://*:84
+    image: luizfigueira/webapifinal:latest
+    ports:
+    - published: 84
+      target: 84
+  webappfinal:
+    build:
+      context: C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src
+      dockerfile: WebAppFinal/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://*:83
+    image: luizfigueira/webappfinal:latest
+    ports:
+    - published: 83
+      target: 83
+version: '3'

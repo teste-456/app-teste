@@ -1,0 +1,53 @@
+services:
+  sql-server:
+    build:
+      context: ../sql
+      dockerfile: ./Dockerfile
+    container_name: sql-server
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: MeuDB@123
+    image: luizfigueira/sql-server:latest
+    networks:
+      default: null
+  webapifinal:
+    build:
+      context: .
+      dockerfile: WebApiFinal/Dockerfile
+    container_name: webapifinal
+    depends_on:
+      sql-server:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://*:84
+    image: luizfigueira/webapifinal:latest
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 84
+      published: 84
+      protocol: tcp
+  webappfinal:
+    build:
+      context: .
+      dockerfile: WebAppFinal/Dockerfile
+    container_name: webappfinal
+    depends_on:
+      webapifinal:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://*:83
+    image: luizfigueira/webappfinal:latest
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 83
+      published: 83
+      protocol: tcp
+networks:
+  default:
+    name: dockercompose11646950725049298490_default

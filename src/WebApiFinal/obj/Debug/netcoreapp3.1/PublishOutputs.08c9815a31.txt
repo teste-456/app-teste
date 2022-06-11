@@ -1,0 +1,8 @@
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\WebApiFinal.exe
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\appsettings.Development.json
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\appsettings.json
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\appsettings.Production.json
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\WebApiFinal.dll
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\WebApiFinal.deps.json
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\WebApiFinal.runtimeconfig.json
+C:\Backup\Dev\Cursos\AWS-ECS-Teste-Final\src\WebApiFinal\obj\Release\netcoreapp3.1\PubTmp\Out\WebApiFinal.pdb
