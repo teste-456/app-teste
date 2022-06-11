@@ -1,0 +1,7 @@
+docker volume create kibanadata --driver=local
+docker volume create esdata01 --driver=local
+docker volume create esdata02 --driver=local
+docker volume create esdata03 --driver=local
+docker volume create certs --driver=local
+docker volume create packetebeat --driver=local
+

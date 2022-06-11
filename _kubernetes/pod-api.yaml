@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapifinal
+  namespace: default
+  labels:
+    app: webapifinal
+spec:
+  containers:
+    - name: webapifinal
+      image: luizfigueira/webapifinal
+      ports:
+        - containerPort: 80

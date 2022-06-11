@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-deployment
+  labels:
+    app: mssql
+spec:
+  selector:
+    matchLabels:
+      app: mssql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mssql
+        image: luizfigueira/sql-server
+        #image: mcr.microsoft.com/mssql/rhel/server:2019-CU1-rhel-8
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: SA_PASSWORD
+        volumeMounts:
+          - name: mssql-persistent-storage
+            mountPath: /var/opt/mssql
+      volumes:
+        - name: mssql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mssql-data-claim
+            #hostPath:
+            #path: /C/Backup/Dev/Cursos/AWS-ECS-Teste-Final/volume
+            #path: /usr/work/sqldata

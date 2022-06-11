@@ -1,0 +1,30 @@
+heartbeat.monitors:
+- type: http
+  schedule: '@every 5s'
+  urls:
+    - http://es01:9200
+    - http://es02:9200
+    - http://es03:9200
+    - http://kibana:5601
+
+- type: icmp
+  schedule: '@every 5s'
+  hosts:
+    - es01
+    - es02
+    - es03
+    - kibana
+    - webappfinal
+    - webapifinal
+
+processors:
+- add_cloud_metadata: ~
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS}'
+  username: '${ELASTICSEARCH_USERNAME}'
+  password: '${ELASTICSEARCH_PASSWORD}'
+  protocol: "https"
+  ssl.enabled: true
+  ssl.verification_mode: none
+

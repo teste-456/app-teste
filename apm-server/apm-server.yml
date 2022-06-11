@@ -1,0 +1,53 @@
+apm-server:
+  host: "apm-server:8200"
+  concurrent_requests: 5
+  rum:
+    enabled: true
+  
+
+  # 
+apm-server.kibana.host: "http://kibana:5601"
+apm-server.kibana.protocol: "http"
+apm-server.kibana.ssl.enabled: false
+#apm-server.kibana.ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+#apm-server.kibana.ssl.certificate: "/etc/pki/client/cert.pem"
+#apm-server.kibana.ssl.key: "/etc/pki/client/cert.key"
+apm-server.kibana.username: kibana_system
+apm-server.kibana.password: huRJ0tw_25nA5G1uih3q
+#apm-server.auth.secret_token: AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE2NTAxMzUxNTc3Mjc6bjRzeXJ0aVBSMFctQzFvbWM5dkRrQQ
+
+queue.mem.events: 4096
+
+max_procs: 4
+
+output.elasticsearch:
+  enabled: true
+  hosts: ["https://es01:9200"] 
+  protocol: "https"
+  username: "elastic"
+  password: "huRJ0tw_25nA5G1uih3q"
+  ssl.enabled: true
+  ssl.verification_mode: none
+
+  
+
+setup.kibana.host: kibana:5601
+setup.template.settings.index.number_of_replicas: 0
+
+
+# Instrumentation support for the server's HTTP endpoints and event publisher.
+#instrumentation:
+  # Set to true to enable instrumentation of the APM Server itself.
+  #enabled: true
+
+  # Hosts to report instrumentation results to.
+  # For reporting to itself, leave this field commented
+  #hosts:
+  #  - http://remote-apm-server:8200
+
+  # API Key for the remote APM Server(s).
+  # If api_key is set then secret_token will be ignored.
+  #api_key:
+
+  # Secret token for the remote APM Server(s).
+  #secret_token: AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE2NTAxMzUxNTc3Mjc6bjRzeXJ0aVBSMFctQzFvbWM5dkRrQQ

@@ -1,0 +1,245 @@
+version: '2.2'
+services:
+  apm-server:
+    container_name: apm-server
+    image: docker.elastic.co/apm/apm-server:8.1.2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+    - 8200:8200
+    networks:
+    - elastic
+    command: >
+       apm-server -e
+         -E apm-server.rum.enabled=true
+         -E setup.kibana.host=kibana:5601
+         -E setup.template.settings.index.number_of_replicas=0
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=kibana:5601
+         -E ELASTIC_APM_SECRET_TOKEN=AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE2NDkwODk1MDExODc6OVNwSVZLLU9SVnE4d1RqU2RhYmpYdw
+         -E output.elasticsearch.hosts=["elasticsearch:9200"]
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+
+  elasticsearch:
+    #hostname: elasticsearch
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.2
+    environment:
+    - bootstrap.memory_lock=true
+    - cluster.name=docker-cluster
+    - cluster.routing.allocation.disk.threshold_enabled=false
+    - discovery.type=single-node
+    #- ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+    volumes:
+    - esdata:/usr/share/elasticsearch/data
+    ports:
+    - 9200:9200
+    networks:
+    - elastic
+    healthcheck:
+      interval: 20s
+      retries: 10
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+
+  kibana:
+    container_name: kibana
+    #hostname: kibana
+    build: 
+      context: ./kibana
+    #image: docker.elastic.co/kibana/kibana:8.1.2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      #ELASTICSEARCH_USERNAME: elastic/kibana
+      #ELASTICSEARCH_PASSWORD: ySmWSODem_VzPspxk*5i
+    ports:
+    - 5601:5601
+    networks:
+    - elastic
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+
+  metricbeat:
+    container_name: metricbeat
+    hostname: metricbeat
+    build: 
+      context: ./beat/metricbeat
+    user: root
+    volumes:      
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - elasticsearch
+      - kibana
+      - webapifinal
+      - webappfinal
+    restart: on-failure
+    networks:
+      - elastic
+
+  heartbeat:
+    container_name: heartbeat
+    hostname: heartbeat
+    build: 
+      context: ./beat/heartbeat
+    depends_on:
+      - elasticsearch
+      - kibana
+      - webapifinal
+      - webappfinal
+    restart: on-failure
+    networks:
+      - elastic
+
+  webappfinal:
+    container_name: webappfinal
+    image: luizfigueira/webappfinal:latest
+    build:
+      context: ./src
+      dockerfile: WebAppFinal/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://*:83
+    ports:
+      - "83:83"
+    depends_on:
+      - webapifinal
+    networks:
+      - elastic
+
+  webapifinal:
+    container_name: webapifinal
+    image: luizfigueira/webapifinal:latest
+    build:
+      context: ./src
+      dockerfile: WebApiFinal/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://*:84
+    ports:
+      - "84:84"
+    networks:
+      - elastic
+
+  logstash:
+    container_name: logstash
+    hostname: logstash
+    image: logstash:8.1.2
+    #ulimits:
+      #memlock:
+      #  soft: -1
+      #  hard: -1
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/logstash.template.json:/usr/share/logstash/templates/logstash.template.json
+    ports:
+      - 5044:5044
+    links:
+      - elasticsearch:elasticsearch
+    depends_on:
+      - elasticsearch
+    #stdin_open: true
+    #tty: true
+    #network_mode: bridge
+    #logging:
+    #  driver: "json-file"
+    #  options:
+    #    max-size: "10m"
+    #    max-file: "50"
+    networks:
+      - elastic
+
+  filebeat:
+    user: root
+    container_name: filebeat
+    hostname: filebeat
+    image: docker.elastic.co/beats/filebeat:8.1.2
+    links:
+      - logstash:logstash
+    depends_on:
+      - logstash
+    volumes:
+      - /var/run/docker.sock:/host_docker/docker.sock
+      - /var/lib/docker:/host_docker/var/lib/docker
+      - ./mylog:/usr/share/filebeat/mylog
+      - ./beat/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    command: ["--strict.perms=false"]
+    #ulimits:
+    #  memlock:
+    #    soft: -1
+    #    hard: -1
+    #stdin_open: true
+    #tty: true
+    #network_mode: bridge
+    #deploy:
+    #  mode: global
+    #logging:
+    #  driver: "json-file"
+    #  options:
+    #    max-size: "10m"
+    #    max-file: "50"
+    networks:
+      - elastic
+
+  packetbeat:
+    container_name: packetbeat
+    image: docker.elastic.co/beats/packetbeat:${ELASTIC_VERSION:-8.1.2}
+    # https://github.com/docker/swarmkit/issues/1951
+    hostname: "{{.Node.Hostname}}-packetbeat"
+    user: root
+    #networks:
+    #  - elastic
+    network_mode: host
+    configs:
+      - source: pb_config
+        target: /usr/share/packetbeat/packetbeat.yml
+    volumes:
+      - packetbeat:/usr/share/packetbeat/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-node1}
+      - KIBANA_HOST=${KIBANA_HOST:-node1}
+      #- ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      #- ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      # Eagerly waiting for Docker 19.06 release which will bring --privileged flag to Docker
+      # Swarm Mode https://github.com/moby/moby/issues/24862#issuecomment-451594187
+      # support for capabilities https://github.com/moby/moby/pull/38380
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    depends_on: 
+      - elasticsearch
+      - kibana
+    command: ["--strict.perms=false"]
+    deploy:
+      mode: global
+
+volumes:
+  esdata:
+    driver: local
+  packetbeat:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
+
+configs:
+  pb_config:
+    file: ./beat/packetbeat/packetbeat.yml
