@@ -9073,11 +9073,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final\\src\\WebApiFinal\\WebApiFinal.csproj",
+      "projectUniqueName": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final-2\\src\\WebApiFinal\\WebApiFinal.csproj",
       "projectName": "WebApiFinal",
-      "projectPath": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final\\src\\WebApiFinal\\WebApiFinal.csproj",
+      "projectPath": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final-2\\src\\WebApiFinal\\WebApiFinal.csproj",
       "packagesPath": "C:\\Users\\USUARIO\\.nuget\\packages\\",
-      "outputPath": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final\\src\\WebApiFinal\\obj\\",
+      "outputPath": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final-2\\src\\WebApiFinal\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -9172,7 +9172,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
       }
     }
   }

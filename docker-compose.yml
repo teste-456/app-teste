@@ -265,9 +265,9 @@ services:
   webappfinal:
     container_name: webappfinal
     image: luizfigueira/webappfinal:latest
-    build:
-      context: ./src
-      dockerfile: WebAppFinal/Dockerfile
+    #build:
+    #  context: ./src
+    #  dockerfile: WebAppFinal/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://*:83
@@ -278,17 +278,47 @@ services:
     networks:
       - elastic
 
-  webapifinal:
-    container_name: webapifinal
-    image: luizfigueira/webapifinal:latest
-    build:
-      context: ./src
-      dockerfile: WebApiFinal/Dockerfile
+  #webapifinal:
+  #  container_name: webapifinal
+  #  image: luizfigueira/webapifinal:latest
+  #  build:
+  #    context: ./src
+  #    dockerfile: WebApiFinal/Dockerfile
+  #  environment:
+  #    - ASPNETCORE_ENVIRONMENT=Production
+  #    - ASPNETCORE_URLS=http://*:84
+  #  ports:
+  #    - "84:84"
+  #  networks:
+  #    - elastic
+
+  webapimysql:
+    container_name: webapimysql
+    image: luizfigueira/webapimysql:latest
+    #build:
+    #  context: ./src
+    #  dockerfile: WebApiMySQL/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://*:84
     ports:
       - "84:84"
+    networks:
+      - elastic
+
+  db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=weather
+      - MYSQL_ROOT_PASSWORD=mauFJcuf5dhRMQrjj
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - elastic
 
@@ -460,6 +490,8 @@ volumes:
   kibanadata:
     driver: local
   packetbeat:
+    driver: local
+  db:
     driver: local
 
 networks:

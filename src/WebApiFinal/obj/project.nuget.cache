@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NDIFuAHwOz32tdkRSM3wNLJ0T1SPeJxqwexDg2BQcHzm0OVeryp62dVXeZ4GZ3xwIk4KmWnT+gVtjaFdnWt+Mg==",
+  "dgSpecHash": "+Coys+mik9OPz5PC+Ail6ayswOGtruMQYpqeHrC2rVL+CBuTHHee+gkapesAkz5Us7JlfMIZvKLaAYUchve5Aw==",
   "success": true,
-  "projectFilePath": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final\\src\\WebApiFinal\\WebApiFinal.csproj",
+  "projectFilePath": "C:\\Backup\\Dev\\Cursos\\AWS-ECS-Teste-Final-2\\src\\WebApiFinal\\WebApiFinal.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USUARIO\\.nuget\\packages\\elastic.apm\\1.12.1\\elastic.apm.1.12.1.nupkg.sha512",
     "C:\\Users\\USUARIO\\.nuget\\packages\\elastic.apm.aspnetcore\\1.12.1\\elastic.apm.aspnetcore.1.12.1.nupkg.sha512",
