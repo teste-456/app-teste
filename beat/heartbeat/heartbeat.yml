@@ -2,20 +2,15 @@ heartbeat.monitors:
 - type: http
   schedule: '@every 5s'
   urls:
-    - http://es01:9200
-    - http://es02:9200
-    - http://es03:9200
     - http://kibana:5601
+    - http://webappfinal:83
 
 - type: icmp
   schedule: '@every 5s'
   hosts:
-    - es01
-    - es02
-    - es03
     - kibana
     - webappfinal
-    - webapifinal
+    - webapimysql
 
 processors:
 - add_cloud_metadata: ~

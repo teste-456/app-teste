@@ -1,4 +1,4 @@
-version: "2.2"
+version: "3.5"
 
 services:
   setup:
@@ -64,7 +64,6 @@ services:
       retries: 120
     networks:
       - elastic
-
 
   es01:
     container_name: es01
@@ -293,7 +292,7 @@ services:
   #    - elastic
 
   webapimysql:
-    container_name: webapimysql
+    #container_name: webapimysql
     image: luizfigueira/webapimysql:latest
     #build:
     #  context: ./src
@@ -301,8 +300,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://*:84
-    ports:
-      - "84:84"
+    #ports:
+    #  - "84:84"
+    deploy: 
+      mode: replicated
+      replicas: 3      
     networks:
       - elastic
 
@@ -352,7 +354,7 @@ services:
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
     depends_on:
       - proxy_dep
-      - webapifinal
+      - webapimysql
       - webappfinal
     restart: on-failure
     networks:

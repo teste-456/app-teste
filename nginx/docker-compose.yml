@@ -22,5 +22,5 @@ services:
 
 networks:
   default:
-    name: elastic
+    name: app-teste_elastic
     external: true
